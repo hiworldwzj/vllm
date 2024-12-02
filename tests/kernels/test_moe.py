@@ -112,3 +112,4 @@ def test_fused_moe_fp8(
     
 test_fused_moe_fp8(128, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe_fp8(256, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8(512, 5120, 192, 160, 6, torch.bfloat16)
