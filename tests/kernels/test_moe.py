@@ -63,10 +63,10 @@ def test_fused_moe(
     # torch_output = torch_moe(a, w1, w2, score, topk)
     # torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
 
-test_fused_moe(128, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe(256, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe(512, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe(1024, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe(128, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe(256, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe(512, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe(1024, 192, 5120, 160, 6, torch.bfloat16)
 
 def quantize_moe(weight):
     num_experts = weight.shape[0]
@@ -111,10 +111,10 @@ def test_fused_moe_fp8(
     # torch_output = torch_moe(a, w1, w2, score, topk)
     # torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
     
-test_fused_moe_fp8(128, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(256, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(512, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(1024, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8(128, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe_fp8(256, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe_fp8(512, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe_fp8(1024, 192, 5120, 160, 6, torch.bfloat16)
 
 
 
@@ -150,7 +150,7 @@ def test_fused_moe_fp8_static(
     # torch_output = torch_moe(a, w1, w2, score, topk)
     # torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
     
-test_fused_moe_fp8_static(128, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe_fp8_static(256, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe_fp8_static(512, 5120, 192, 160, 6, torch.bfloat16)
-test_fused_moe_fp8_static(1024, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(128, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(256, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(512, 192, 5120, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(1024,192, 5120, 160, 6, torch.bfloat16)
