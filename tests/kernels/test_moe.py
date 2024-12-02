@@ -5,7 +5,7 @@ Run `pytest tests/kernels/test_moe.py`.
 import sys
 sys.path.append("/nvme/wzj/dev1/latest_test_lightllm/vllm")
 
-import pytest
+# import pytest
 import torch
 from transformers import MixtralConfig
 from transformers.models.mixtral.modeling_mixtral import MixtralSparseMoeBlock
