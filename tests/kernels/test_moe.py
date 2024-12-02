@@ -65,7 +65,8 @@ def test_fused_moe(
 
 test_fused_moe(128, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe(256, 5120, 192, 160, 6, torch.bfloat16)
-
+test_fused_moe(512, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe(1024, 5120, 192, 160, 6, torch.bfloat16)
 
 def quantize_moe(weight):
     num_experts = weight.shape[0]
@@ -113,3 +114,4 @@ def test_fused_moe_fp8(
 test_fused_moe_fp8(128, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe_fp8(256, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe_fp8(512, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8(1024, 5120, 192, 160, 6, torch.bfloat16)
