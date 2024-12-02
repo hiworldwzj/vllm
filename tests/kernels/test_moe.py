@@ -115,3 +115,42 @@ test_fused_moe_fp8(128, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe_fp8(256, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe_fp8(512, 5120, 192, 160, 6, torch.bfloat16)
 test_fused_moe_fp8(1024, 5120, 192, 160, 6, torch.bfloat16)
+
+
+
+@torch.no_grad()
+def test_fused_moe_fp8_static(
+    m: int,
+    n: int,
+    k: int,
+    e: int,
+    topk: int,
+    dtype: torch.dtype,
+):
+    a = torch.randn((m, k), device="cuda", dtype=dtype) / 10
+    a_t, a1_scale = ops.scaled_fp8_quant(a, scale=None, use_per_token_if_dynamic=False)
+    w1 = torch.randn((e, 2 * n, k), device="cuda", dtype=dtype) / 10
+    w1, w1_scale = quantize_moe(w1)
+    w2 = torch.randn((e, k, n), device="cuda", dtype=dtype) / 10
+    w2, w2_scale = quantize_moe(w2)
+
+    score = torch.randn((m, e), device="cuda", dtype=dtype)
+    
+    triton_output = fused_moe(a, w1, w2, score, topk, renormalize=False, use_fp8_w8a8=True, w1_scale=w1_scale, w2_scale=w2_scale, a1_scale=a1_scale, a2_scale=a1_scale)
+
+    import time
+    torch.cuda.synchronize()
+    start = time.time()
+    for _ in range(100):
+        triton_output = fused_moe(a, w1, w2, score, topk, renormalize=False, use_fp8_w8a8=True, w1_scale=w1_scale, w2_scale=w2_scale, a1_scale=a1_scale, a2_scale=a1_scale)
+    torch.cuda.synchronize()
+    
+    print(f"fp8 {m} cost time: {(time.time() - start) * 1000}")
+    
+    # torch_output = torch_moe(a, w1, w2, score, topk)
+    # torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
+    
+test_fused_moe_fp8_static(128, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(256, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(512, 5120, 192, 160, 6, torch.bfloat16)
+test_fused_moe_fp8_static(1024, 5120, 192, 160, 6, torch.bfloat16)
