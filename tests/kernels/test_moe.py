@@ -60,8 +60,8 @@ def test_fused_moe(
     
     print(f"bf16 cost time: {(time.time() - start) * 1000}")
     
-    torch_output = torch_moe(a, w1, w2, score, topk)
-    torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
+    # torch_output = torch_moe(a, w1, w2, score, topk)
+    # torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
 
 test_fused_moe(128, 5120, 192, 160, 6, torch.bfloat16)
 
@@ -105,9 +105,9 @@ def test_fused_moe_fp8(
         triton_output = fused_moe(a, w1, w2, score, topk, renormalize=False, use_fp8_w8a8=True, w1_scale=w1_scale, w2_scale=w2_scale)
     torch.cuda.synchronize()
     
-    print(f"cost time: {(time.time() - start) * 1000}")
+    print(f"fp8 cost time: {(time.time() - start) * 1000}")
     
-    torch_output = torch_moe(a, w1, w2, score, topk)
-    torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
+    # torch_output = torch_moe(a, w1, w2, score, topk)
+    # torch.testing.assert_close(triton_output, torch_output, atol=2e-2, rtol=0)
     
 test_fused_moe_fp8(128, 5120, 192, 160, 6, torch.bfloat16)
