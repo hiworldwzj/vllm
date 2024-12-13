@@ -94,6 +94,21 @@ def test_fused_moe_fp8(
     topk: int,
     dtype: torch.dtype,
 ):   
+    import torch
+    import random
+    import numpy as np
+
+    # 设置随机种子
+    seed = 42
+    torch.manual_seed(seed)  # PyTorch 的随机种子
+    random.seed(seed)        # Python 的随机种子
+    np.random.seed(seed)     # NumPy 的随机种子
+
+    # 如果使用 GPU
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)  # 如果有多个 GPU
+        
     input_tuples = []
     for _ in range(g_test_count):
         a = torch.randn((m, k), device="cuda", dtype=dtype) / 10
@@ -182,6 +197,8 @@ import json
 from multiprocessing import Process, Queue
 
 def worker(m, n, k, e, topk, dtype, test_configs, queue):
+
+
     from vllm.model_executor.layers.fused_moe.fused_moe import get_default_config
 
     def fix_get_default_config(
