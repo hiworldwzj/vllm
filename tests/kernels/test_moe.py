@@ -182,6 +182,22 @@ import json
 from multiprocessing import Process, Queue
 
 def worker(m, n, k, e, topk, dtype, test_configs, queue):
+    from vllm.model_executor.layers.fused_moe.fused_moe import get_default_config
+
+    def fix_get_default_config(
+            M: int,
+            E: int,
+            N: int,
+            K: int,
+            topk: int,
+            dtype: str,
+            is_marlin: bool,
+        ):
+        import os
+        return os.config
+    
+    get_default_config.__code__ = fix_get_default_config.__code__
+
     try:
         for index in range(len(test_configs)):
             import os
@@ -260,7 +276,7 @@ def tuning_configs(m: int,
     print(best_config, best_cost_time)
 
 # tuning_configs(256, 192, 5120, 160, 6, torch.bfloat16)
-tuning_configs(190, 192, 5120, 160, 6, torch.bfloat16)
+tuning_configs(1024, 192, 5120, 160, 6, torch.bfloat16)
     
 # {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 256, 'GROUP_SIZE_M': 8, 'num_warps': 8, 'num_stages': 2}
 # {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 128, 'GROUP_SIZE_M': 4, 'num_warps': 8, 'num_stages': 1} for batch size 258
@@ -268,13 +284,13 @@ tuning_configs(190, 192, 5120, 160, 6, torch.bfloat16)
 import os
 os.config =  {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 256, 'BLOCK_SIZE_K': 64, 'GROUP_SIZE_M': 2, 'num_warps': 4, 'num_stages': 2}
 g_test_count = 60
-test_fused_moe_fp8(128, 192, 5120, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(180, 192, 5120, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(199, 192, 5120, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(200, 192, 5120, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(256, 192, 5120, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(512, 192, 5120, 160, 6, torch.bfloat16)
-test_fused_moe_fp8(1024, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(128, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(180, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(199, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(200, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(256, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(512, 192, 5120, 160, 6, torch.bfloat16)
+# test_fused_moe_fp8(1024, 192, 5120, 160, 6, torch.bfloat16)
 
 # for i in range(201):
 #     test_fused_moe_fp8(i + 1, 192, 5120, 160, 6, torch.bfloat16)
